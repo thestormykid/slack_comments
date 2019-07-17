@@ -18,6 +18,6 @@ app.use(cors());
 
 app.use('/', routes)
 
-app.listen('8080', function() {
+app.listen(process.env.PORT || 3000, function() {
 	console.log('server is running .....');
 })

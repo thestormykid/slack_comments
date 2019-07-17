@@ -33,6 +33,11 @@ module.exports = {
 
 	addTodo: function(req, res) {
 
+		if (!req.body.text) {
+			return res.status(200).json('please add some body to the todo');
+
+		}
+
 		var todoObject = {
 			text: req.body.text.trim(),
 			createdBy: req.body.user_id,
@@ -41,14 +46,16 @@ module.exports = {
 		}
 
 		// first check whether the todo is present or not, If it is then return otherwise add the todo
-
-		Todo.find({ team: todoObject.team_domain, text: todoObject.text }, function(err, checkIfToDoContainsOrNot) {
+		Todo.find({ $and: [{team: todoObject.team}, {text: todoObject.text}] }, function(err, checkIfToDoContainsOrNot) {
 			if (err) {
 				console.log(err);
 				return res.status(500).json('something went wrong');
 			}
 
+			console.log(checkIfToDoContainsOrNot);
+
 			if (checkIfToDoContainsOrNot.length != 0) {
+				console.log()
 				return res.status(200).json('this todo is already present!!!')
 			}
 
@@ -76,8 +83,9 @@ module.exports = {
 		}
 
 		var text = req.body.text.trim();
+		console.log(req.body);
 
-		Todo.deleteOne({ team: req.body.team_doamin, text: text }, function(err, deletedTodo) {
+		Todo.deleteOne({ team: req.body.team_domain, text: text }, function(err, deletedTodo) {
 			if (err) {
 				console.log(err);
 				return res.status(500).json('something went wrong');

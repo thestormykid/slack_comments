@@ -102,10 +102,43 @@ module.exports = {
 
 		 	var dataNeedToBeSend = {
 		 		text: 'This todo deleted successfully',
-		 		attachments: [{ text: text}],
+		 		attachments: [{ text: text }],
 		 	}
 
 			return res.status(200).json(dataNeedToBeSend);
+		})
+	},
+
+	editTodo: function(req, res) {
+
+		var team = req.body.team_domain;
+		var channel_id = req.body.channel_id;
+		var text = req.body.text.split("@");
+		var previousText = text[1].trim();
+		var updatedText = text[2].trim();
+
+		Todo.find({team: team, channel_id: channel_id, text: updatedText}, function(err, checkIfTheUpdatedTaskIsPresentOrNot) {
+			if (err) {
+				console.log(err);
+				return res.status(500).json('something went wrong');
+			}
+
+			if (checkIfTheUpdatedTaskIsPresentOrNot.length == 0) {
+
+				Todo.update({ team: team, channel_id: channel_id, text: previousText }, {text: updatedText}, function(err, updatedTodo) {
+					if (err) {
+						console.log(err);
+						return res.status(500).json('something went wrong');
+
+					}
+
+					return res.status(200).json('todo updated successfully');
+				})
+
+			} else {
+				res.status(200).json('this <' + updatedText + '> todo cannot be updated as it is already present');
+
+			}
 		})
 	}
 }

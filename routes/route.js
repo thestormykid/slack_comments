@@ -11,5 +11,6 @@ var routes = {
 router.post('/api/listtodos', routes.api.index.listtodos);
 router.post('/api/addTodo', routes.api.index.addTodo);
 router.post('/api/markTodo', routes.api.index.markTodo);
+router.post('/api/editTodo', routes.api.index.editTodo);
 
 module.exports = router;

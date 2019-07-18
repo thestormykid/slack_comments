@@ -13,7 +13,7 @@ mongoose.connect("mongodb://a:a@cluster0-shard-00-00-04d6p.mongodb.net:27017,clu
 app.get('/', function(req, res) {
 	res.send('app is working properly');
 })
-
+https://gentle-castle-45666.herokuapp.com/
 app.use(cors());
 
 app.use('/', routes)

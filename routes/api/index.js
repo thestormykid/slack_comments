@@ -6,9 +6,10 @@ module.exports = {
 	listtodos : function (req, res) {
 
 		var team = req.body.team_domain;
+		var channel_id  = req.body.channel_id;
 
 		// used to get the whole todo list
-		Todo.find({ team }, {_id: 0, text: 1}).exec(function(err, todoList) {
+		Todo.find({ team: team, channel_id: channel_id }, {_id: 0, text: 1}).exec(function(err, todoList) {
 			if (err) {
 				console.log(err);
 				res.status(500).json('something went wrong');
@@ -42,11 +43,13 @@ module.exports = {
 			text: req.body.text.trim(),
 			createdBy: req.body.user_id,
 			team: req.body.team_domain,
-			teamId: req.body.team_id
+			teamId: req.body.team_id,
+			channel_id: req.body.channel_id,
+			channel_name: req.body.channel_name
 		}
 
 		// first check whether the todo is present or not, If it is then return otherwise add the todo
-		Todo.find({ $and: [{team: todoObject.team}, {text: todoObject.text}] }, function(err, checkIfToDoContainsOrNot) {
+		Todo.find({ $and: [{team: todoObject.team}, {channel_id: todoObject.channel_id}, {text: todoObject.text}] }, function(err, checkIfToDoContainsOrNot) {
 			if (err) {
 				console.log(err);
 				return res.status(500).json('something went wrong');
@@ -85,7 +88,7 @@ module.exports = {
 		var text = req.body.text.trim();
 		console.log(req.body);
 
-		Todo.deleteOne({ team: req.body.team_domain, text: text }, function(err, deletedTodo) {
+		Todo.deleteOne({ team: req.body.team_domain, channel_id: req.body.channel_id ,  text: text }, function(err, deletedTodo) {
 			if (err) {
 				console.log(err);
 				return res.status(500).json('something went wrong');
